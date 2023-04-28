@@ -324,16 +324,16 @@ install_beggy() {
 
   case "${background}" in
     blank)
-      cp -r "${THEME_SRC_DIR}/assets/gnome-shell/common-assets/background-blank.png"          "${WHITESUR_TMP_DIR}/beggy.png" ;;
+      cp -r "${THEME_SRC_DIR}/assets/gnome-shell/backgrounds/background-blank.png"            "${WHITESUR_TMP_DIR}/beggy.png" ;;
     default)
       if [[ "${no_blur}" == "false" && "${no_darken}" == "true" ]]; then
-        cp -r "${THEME_SRC_DIR}/assets/gnome-shell/common-assets/background-blur.png"         "${WHITESUR_TMP_DIR}/beggy.png"
+        cp -r "${THEME_SRC_DIR}/assets/gnome-shell/backgrounds/background-blur.png"           "${WHITESUR_TMP_DIR}/beggy.png"
       elif [[ "${no_blur}" == "false" && "${no_darken}" == "false" ]]; then
-        cp -r "${THEME_SRC_DIR}/assets/gnome-shell/common-assets/background-blur-darken.png"  "${WHITESUR_TMP_DIR}/beggy.png"
+        cp -r "${THEME_SRC_DIR}/assets/gnome-shell/backgrounds/background-blur-darken.png"    "${WHITESUR_TMP_DIR}/beggy.png"
       elif [[ "${no_blur}" == "true" && "${no_darken}" == "true" ]]; then
-        cp -r "${THEME_SRC_DIR}/assets/gnome-shell/common-assets/background-default.png"      "${WHITESUR_TMP_DIR}/beggy.png"
+        cp -r "${THEME_SRC_DIR}/assets/gnome-shell/backgrounds/background-default.png"        "${WHITESUR_TMP_DIR}/beggy.png"
       else
-        cp -r "${THEME_SRC_DIR}/assets/gnome-shell/common-assets/background-darken.png"       "${WHITESUR_TMP_DIR}/beggy.png"
+        cp -r "${THEME_SRC_DIR}/assets/gnome-shell/backgrounds/background-darken.png"         "${WHITESUR_TMP_DIR}/beggy.png"
       fi
       ;;
     *)
@@ -382,7 +382,7 @@ install_shelly() {
   fi
 
   if [[ "${GNOME_VERSION}" == 'none' ]]; then
-    local GNOME_VERSION='42-0'
+    local GNOME_VERSION='44-0'
   fi
 
   mkdir -p                                                                                    "${TARGET_DIR}"
@@ -873,10 +873,10 @@ gtk_base() {
 customize_theme() {
   cp -rf "${THEME_SRC_DIR}/sass/_theme-options"{".scss","-temp.scss"}
 
-  # Darker dark colors
+  # Nord dark colors
   if [[ "${colorscheme}" == '-nord' ]]; then
-    prompt -s "Changing color scheme style to nord style ...\n"
-    sed $SED_OPT "/\$colorscheme/s/default/nord/"                                "${THEME_SRC_DIR}/sass/_theme-options-temp.scss"
+    prompt -s "Changing ColorScheme style to nord version ...\n"
+    sed $SED_OPT "/\$colorscheme/s/default/nord/"                               "${THEME_SRC_DIR}/sass/_theme-options-temp.scss"
   fi
 
   # Darker dark colors

@@ -1657,11 +1657,13 @@ headerbar {
                                       transparent 84%) 0 0 0 1 / 0 0 0 1px stretch;
       }
 
-      &:checked {
+      &:hover, &:active, &:checked {
         border-image: none;
       }
     }
 
+    button:hover + button,
+    button:active + button,
     button:checked + button { border-image: none; }
   }
 
@@ -1785,6 +1787,7 @@ headerbar {
 
   .csd &.default-decoration,
   .csd &.default-decoration:backdrop {
+    padding: 0 $container_padding;
     border-bottom: 1px solid $header_border;
   }
 
@@ -2188,6 +2191,7 @@ menubar,
 // .menu,
 // .context-menu,
 menu {
+  margin: 0;
   padding: $container_padding;
   border-radius: $mn_radius;
   background-color: opacify($menu_bg, 1);
@@ -2201,7 +2205,7 @@ menu {
   }
 
   separator {
-    margin: 2px 4px;
+    margin: 3px 4px;
     min-height: 1px;
     background-color: $borders_color;
     border: none;
@@ -2215,6 +2219,7 @@ menu {
     border-radius: $bt_radius;
     text-shadow: none;
     color: $fg_color;
+    font: initial;
     // -gtk-icon-style: symbolic;
 
     &:hover {
@@ -2285,7 +2290,7 @@ menu {
   > arrow {
     min-width: 16px;
     min-height: 16px;
-    padding: 2px;
+    padding: 6px;
     background-color: transparent;
     border-radius: $mn_radius - 3px;
     border: none;
@@ -2316,7 +2321,8 @@ menu {
 //
 // Popovers
 //
-popover,
+
+// popover,
 popover.background {
   padding: 0;
   border-radius: $wm_radius;
@@ -3651,8 +3657,11 @@ messagedialog { // Message Dialog styling
       padding: ($container_padding - 2px) ($container_padding + 2px);
       box-shadow: none;
       border-radius: $bt_radius;
-      margin: 0 3px 3px 3px;
       border: none;
+
+      &:not(:last-child) {
+        margin-right: $container_padding;
+      }
 
       &:not(.suggested-action):not(.destructive-action) {
         border-radius: $bt_radius;
@@ -4289,27 +4298,27 @@ stackswitcher {
 //
 
 decoration {
-  transition: $shadow_transition;
+  transition: none;
   border-radius: $wm_radius;
+  border-width: 0px;
   box-shadow: 0 3px 3px 0 $wm_shadow,
               0 8px 8px 0 $wm_shadow,
               0 16px 16px 0 $wm_shadow,
               $wm_outline;
 
   // this is used for the resize cursor area
-  margin: 6px;
+  margin: 10px;
 
   &:backdrop {
+    transition: $shadow_transition;
     // the transparent shadow here is to enforce that the shadow extents don't
     // change when we go to backdrop, to prevent jumping windows
-    box-shadow: 0 3px 3px 0 $wm_shadow,
-                0 8px 8px 0 transparent,
+    box-shadow: 0 3px 3px 0 $wm_shadow_backdrop,
+                0 8px 8px 0 $wm_shadow_backdrop,
                 0 16px 16px 0 transparent,
                 $wm_outline;
   }
 
-  .maximized &,
-  .fullscreen &,
   .tiled &,
   .tiled-top &,
   .tiled-right &,
@@ -4317,9 +4326,21 @@ decoration {
   .tiled-left & {
     border-radius: $maximized_radius;
     box-shadow: 0 3px 3px 0 $wm_shadow, $wm_outline;
+
+    &:backdrop {
+      box-shadow: 0 3px 3px 0 $wm_shadow_backdrop, $wm_outline;
+    }
   }
 
-  .fullscreen & { border-radius: 0; }
+  .maximized & {
+    border-radius: $maximized_radius;
+    box-shadow: none;
+  }
+
+  .fullscreen & {
+    border-radius: 0;
+    box-shadow: none;
+  }
 
   .popup & {
     box-shadow: none;
@@ -4328,11 +4349,14 @@ decoration {
 
   // server-side decorations as used by mutter
   .ssd & {
-    margin: -6px;
     border-radius: $wm_radius $wm_radius 0 0;
 
     &, &.backdrop { box-shadow: $wm_outline; }
-    &.maximized, &.tiled { border-radius: 0; }
+
+    &.maximized, &.tiled {
+      border-radius: 0;
+      box-shadow: none;
+    }
   }
 
   .metacity & {
