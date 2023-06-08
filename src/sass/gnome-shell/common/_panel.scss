@@ -49,12 +49,12 @@ $panel_height: $menuitem_size;
 
 #panel {
   background-color: $panel_bg;
+<<<<<<< HEAD
   font-weight: 500;
+=======
+>>>>>>> ffd0c9a (fixed panel font fix)
   color: $panel_fg;
-  font-feature-settings: "tnum";
   transition-duration: 250ms;
-  @include font(body-1);
-  height: $panel_height !important;
   box-shadow: 0 5px 16px rgba(black, 0.05);
 
   // the rounded outset corners
@@ -66,6 +66,7 @@ $panel_height: $menuitem_size;
     -panel-corner-opacity: 1;
     transition-duration: 250ms;
   }
+<<<<<<< HEAD
 
   // panel menus
   .panel-button {
@@ -315,3 +316,6 @@ $panel_height: $menuitem_size;
   .screencast-indicator,
   .remote-access-indicator { color: $warning_color; }
 }
+=======
+}
+>>>>>>> ffd0c9a (fixed panel font fix)
