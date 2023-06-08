@@ -19,10 +19,6 @@
       color: $fg_color; // for Ubuntu session
     }
 
-    &:selected {
-      background-color: $primary_color;
-      color: $light_alt_fg_color;
-    }
   }
 
   // window thumbnails
