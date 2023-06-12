@@ -42,7 +42,9 @@ Don't worry, WhiteSur installer already provides all of those dependencies.
 
 ### Installing from source
 
-Run `./install.sh` to install the default WhiteSur GTK theme pack.
+1. Run `git clone https://github.com/vinceliuice/WhiteSur-gtk-theme.git --depth=1`
+
+2. Run `./install.sh` to install the default WhiteSur GTK theme pack.
 
 ### Uninstall
 
@@ -281,7 +283,7 @@ Usage:  `./tweaks.sh [OPTIONS...]`
 ### <p align="center"> <b> Install and edit Firefox theme </b> </p>
 
 <p align="center"> <a href="src/other/firefox">
-<img src="https://github.com/vinceliuice/WhiteSur-gtk-theme/blob/pictures/pictures/firefox.png"/>
+<img src="https://github.com/vinceliuice/WhiteSur-gtk-theme/blob/pictures/pictures/firefox.svg"/>
 </a> </p>
 
 #### [Install Firefox theme](src/other/firefox)
