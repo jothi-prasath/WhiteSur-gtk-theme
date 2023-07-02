@@ -200,8 +200,9 @@ $raven_padding: 8px;
 
     entry.search {
       padding: 5px 10px;
+      margin: 0 1px;
       border: none;
-      border-bottom: 1px solid rgba(black, if($variant == 'light', 0.1, 0.75));
+      border-bottom: 1px solid $dark_sidebar_border;
       border-radius: 0;
       box-shadow: none;
       font-size: 110%;
@@ -225,11 +226,15 @@ $raven_padding: 8px;
         &:disabled {
           color: $alt_disabled_fg_color;
           background-color: transparent;
+
+          label { color: $alt_disabled_fg_color; }
         }
 
         &:checked:disabled {
           color: $disabled_fg_color;
           background-color: $fill_color;
+
+          label { color: $disabled_fg_color; }
         }
       }
     }
@@ -290,8 +295,9 @@ $raven_padding: 8px;
     }
 
     .budgie-menu-footer {
-      border-top: 1px solid $borders_color;
+      border-top: 1px solid $dark_sidebar_border;
       padding: $container_padding;
+      margin: 0 1px;
 
       button {
         min-height: 16px;
@@ -311,17 +317,6 @@ $raven_padding: 8px;
 
   // Clipboard popover
   > frame > box.vertical {
-    // > box.horizontal {
-    //   > entry {
-    //     padding: $container_padding / 2 $container_padding * 2;
-    //     border: none;
-    //     border-bottom: 1px solid $borders_color;
-    //     border-radius: 0;
-    //     box-shadow: none;
-    //     background: none;
-    //   }
-    // }
-
     > box.vertical {
       > box.vertical {
         margin: 0 $container_padding $container_padding * 1.5;
@@ -356,11 +351,21 @@ $raven_padding: 8px;
   }
 
   &.sound-popover {
-    buttonbox.linked > button { border-radius: $bt_radius; }
+    buttonbox.linked {
+      padding-top: 6px;
+
+      > button { border-radius: $bt_radius; }
+    }
   }
 
   &.caffeine-popover {
-    // .container { padding: $container_padding; }
+    .container {
+      padding: $container_padding;
+
+      .container {
+        padding: $container_padding;
+      }
+    }
   }
 
   &.night-light-indicator {
@@ -371,6 +376,12 @@ $raven_padding: 8px;
 
   &.icon-popover {
     // .container { padding: $container_padding; }
+
+    .icon-popover-stack {
+      separator {
+        margin: $container_padding / 2 $container_padding;
+      }
+    }
   }
 
   &.places-menu {
@@ -1129,8 +1140,8 @@ $raven_shadow: 0 0 3px 0 rgba(black, 0.2), 0 0 8px 0 rgba(black, 0.15), 0 0 16px
       list { background-color: transparent; }
 
       > list > row.activatable {
-        margin-left: -8px;
-        margin-right: -2px;
+        margin-left: -6px;
+        margin-right: -6px;
         background-color: transparent;
 
         > grid > *, // legacy

@@ -52,6 +52,12 @@ $flap_sidebar_size: 240px;
     }
   }
 
+  placessidebar.background {
+    row.sidebar-row {
+      .sidebar-icon { color: if($variant == 'light', $selected_bg_color, lighten($selected_bg_color, 20%)); }
+    }
+  }
+
   flap.unfolded {
     > placessidebar.background {
       background: none;
@@ -684,14 +690,16 @@ button.card.category-tile {
 
   &.category-socialize {
     background: linear-gradient(90deg, #ef4e9b 0%, #f77466 100%);
-    color: $alt_fg_color;
+    color: #fac7d1;
 
     &:hover {
       background: linear-gradient(90deg, shade(#ef4e9b, 1.08) 0%, shade(#f77466, 1.08) 100%);
+      color: #fac7d1;
     }
 
     &:active {
       background: linear-gradient(90deg, shade(#ef4e9b, .95) 0%, shade(#f77466, .95) 100%);
+      color: #fac7d1;
     }
   }
 
