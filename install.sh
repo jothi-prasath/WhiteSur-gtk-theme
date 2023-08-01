@@ -136,7 +136,7 @@ if [[ "${uninstall}" == 'true' ]]; then
   if [[ "${libadwaita}" == 'true' ]]; then
     if [[ "$UID" != '0' ]]; then
       remove_libadwaita
-      prompt -s "Removed gtk-4.0 theme files in '${HOME}/.config/gtk-4.0/' !"; echo
+      prompt -s "Removed gtk-4.0 theme files in '${HOME}/.config/gtk-4.0/' !";
     else
       prompt -e "Do not run '--libadwaita' option with sudo!"; echo
     fi
@@ -183,9 +183,9 @@ else
     fi
   fi
 
-  if (is_running "xfce4-session"); then
-    msg="XFCE: you may need to run 'xfce4-panel -r' after changing your theme to fix your panel opacity."
-  elif (is_my_distro "solus") && (is_running "gnome-session"); then
+#  if (is_running "xfce4-session"); then
+#    msg="XFCE: you may need to run 'xfce4-panel -r' after changing your theme to fix your panel opacity."
+  if (is_my_distro "solus") && (is_running "gnome-session"); then
     msg="GNOME: you may need to disable 'User Themes' extension to fix your dock."
   # elif (is_running "gnome-session") && [[ "${GNOME_VERSION}" == "3-28" ]]; then
   # msg="GNOME: you may need to disable 'User Themes' extension to fix your logout and authentication dialog."
