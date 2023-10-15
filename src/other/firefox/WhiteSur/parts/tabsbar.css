@@ -11,7 +11,9 @@
 }
 
 /* Tabs bar height */
-#tabbrowser-tabs {
+#tabbrowser-tabs,
+#tabbrowser-tabs arrowscrollbox {
+    max-height: 40px !important;
 	--tab-min-height: 32px !important;
 }
 
