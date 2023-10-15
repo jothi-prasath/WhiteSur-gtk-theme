@@ -1431,9 +1431,9 @@ row#AutostartTitle.tweak {
 // separator of sidebar on Gnome control center and Gnome tweaks
 window.background.csd {
   > hdyleaflet,
-  > leaflet,
+  > leaflet, > leaflet.unfolded,
   > box.horizontal {
-    > separator {
+    > separator.vertical {
       @extend %side_separator;
     }
 
@@ -1445,20 +1445,19 @@ window.background.csd {
   }
 
   > hdyleaflet > box.vertical > stack.main-container,
-  > leaflet > box.vertical > stack.main-container,
-  > leaflet > box.vertical:last-child > scrolledwindow { // Right side
+  > leaflet > box.vertical > stack.main-container { // Right side
     background-color: $base_color;
     border-bottom-right-radius: $wm_radius;
   }
 
   // sidebar on gnome tweak
-  list.tweak-categories,
-  > leaflet > box > scrolledwindow > viewport > list.navigation-sidebar {
-    @extend %side_style_left;
+  list.tweak-categories {
+    background-image: none;
+    background-color: rgba($dark_sidebar_bg, 1);
     border-radius: 0 0 0 $wm_radius;
 
     // Themed left sidebar
-    > row:not(:selected):not(:hover) {
+    .tweak-category:not(:selected):not(:hover) {
       background: none;
     }
 
@@ -1470,15 +1469,12 @@ window.background.csd {
   }
 
   &.maximized, &.tiled, &.fullscreen {
-    > hdyleaflet > box.vertical > stack.main-container,
-    > leaflet > box.vertical > stack.main-container,
-    > leaflet > box.vertical:last-child > scrolledwindow {
+    > hdyleaflet > box.vertical > stack.main-container {
       border-bottom-right-radius: $maximized_radius;
     }
 
     // sidebar on gnome tweak
-    list.tweak-categories,
-    leaflet > box > scrolledwindow > viewport > list.navigation-sidebar {
+    .tweak-categories {
       border-radius: 0 0 0 $maximized_radius;
     }
   }
@@ -1589,7 +1585,7 @@ window.background.csd {
   > leaflet > box.vertical > scrolledwindow.view, // > 3.38.0
   > hdyleaflet > box.vertical > scrolledwindow.view, // > 3.34.0
   > box.horizontal > box.vertical > scrolledwindow.view { // > 3.25.90
-    @extend %side_style_left;
+    background-color: rgba($dark_sidebar_bg, 1);
     border-bottom-left-radius: $wm_radius + 1px;
 
     > viewport.frame > stack {
@@ -1766,7 +1762,7 @@ window.background.csd {
   > overlay > leaflet,
   > deck > box > overlay > leaflet { // >= 40.0
     > stack {
-      @extend %side_style_left;
+      background-color: rgba($dark_sidebar_bg, 1);
       border-bottom-left-radius: $wm_radius;
     }
 
@@ -2729,7 +2725,7 @@ window#GearyMainWindow.background.csd { // <= 3.32
   }
 
   .geary-main-layout { // >= 40.0
-    @extend %side_style_left;
+    background-color: $dark_sidebar_bg;
 
     > leaflet > leaflet > headerbar { // left and center headerbar
       &:first-child { @extend %side_headerbar_left; background-color: transparent; }
@@ -2737,13 +2733,9 @@ window#GearyMainWindow.background.csd { // <= 3.32
     }
 
     > leaflet > leaflet > box { // >= 44.0
-      > headerbar { @extend %side_headerbar_right; box-shadow: none; }
+      & > headerbar { @extend %side_headerbar_right; box-shadow: none; }
 
       &:first-child > headerbar { @extend %side_headerbar_left; box-shadow: none; }
-
-      > scrolledwindow {
-        background-image: $side_style_shadow;
-      }
 
       treeview.view.sidebar {
         background-color: transparent;
@@ -2803,16 +2795,16 @@ window#GearyMainWindow.background.csd { // <= 3.32
 
     scrolledwindow {
       // margin: -1px 0;
-      padding: 0 $container_padding / 2;
+      padding: 0 4px;
       background-color: $base_color;
 
       treeview.view {
         background-image: none;
         border: 2px solid transparent;
-        border-radius: $bt_radius;
+        border-radius: $mn_radius;
         outline: none;
-        padding: $container_padding $container_padding * 1.5;
-        margin: 0 $container_padding / 2;
+        padding: 6px 0;
+        margin: 0 4px;
 
         &:hover {
           background-color: rgba($fg_color, 0.1);
@@ -2862,27 +2854,21 @@ window#GearyMainWindow.background.csd { // <= 3.32
 
   conversation-list { // center part >= 44.0
     list#conversation-list {
-      padding: $container_padding;
+      padding: 6px;
 
       > row.activatable.conversation-list {
         border: none;
-        border-radius: $bt_radius;
-        padding: $container_padding;
+        border-radius: $mn_radius;
 
-        > widget > box > box {
-          padding: $container_padding / 2;
-        }
-
-        button.flat {
-          padding: 4px 0;
-          border-radius: $circular_radius;
+        &:not(:first-child) {
+          margin-top: 6px;
         }
       }
 
       > separator {
-        background-color: $menu_bd;
+        background: none;
         border: none;
-        margin: $container_padding / 2 $container_padding * 2;
+        min-height: 0;
       }
     }
   }

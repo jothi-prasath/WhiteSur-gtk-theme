@@ -780,12 +780,13 @@ remove_firefox_theme() {
 #                               DASH TO DOCK                                  #
 ###############################################################################
 
-fix_dash_to_dock() {
+install_dash_to_dock() {
   if [[ -d "${DASH_TO_DOCK_DIR_HOME}" ]]; then
-    backup_file "${DASH_TO_DOCK_DIR_HOME}/stylesheet.css" "udo"
-  elif [[ -d "${DASH_TO_DOCK_DIR_ROOT}" ]]; then
-    backup_file "${DASH_TO_DOCK_DIR_ROOT}/stylesheet.css" "sudo"
+    backup_file "${DASH_TO_DOCK_DIR_HOME}" "udo"
+    rm -rf "${DASH_TO_DOCK_DIR_HOME}"
   fi
+
+  udo cp -rf "${DASH_TO_DOCK_SRC_DIR}/dash-to-dock@micxgx.gmail.com"   "${GNOME_SHELL_EXTENSION_DIR}"
 
   if has_command dbus-launch; then
     udo dbus-launch dconf write /org/gnome/shell/extensions/dash-to-dock/apply-custom-theme true

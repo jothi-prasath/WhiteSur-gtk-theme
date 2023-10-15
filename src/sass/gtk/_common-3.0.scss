@@ -28,17 +28,8 @@ $cakeisalie: "This stylesheet is generated, DO NOT EDIT";
   -gtk-secondary-caret-color: $selected_bg_color;
 }
 
-$side_style_shadow: linear-gradient(to left, rgba(black, if($variant == 'light', 0.04, 0.12)), transparent 6px);
-
-%side_style_left {
-  background-image: $side_style_shadow;
-  background-color: rgba($dark_sidebar_bg, 1);
-  box-shadow: none;
-  border: none;
-}
-
 %side_headerbar_left {
-  background-image: $side_style_shadow;
+  background-image: none;
   background-color: rgba($dark_sidebar_bg, 1);
   box-shadow: inset 0 1px $highlight_color;
   border: none;
@@ -53,7 +44,7 @@ $side_style_shadow: linear-gradient(to left, rgba(black, if($variant == 'light',
 %side_searchbar {
   > revealer > box {
     background-color: rgba($dark_sidebar_bg, 1);
-    background-image: $side_style_shadow;
+    border-color: $dark_sidebar_border;
   }
 }
 
@@ -66,11 +57,11 @@ $side_style_shadow: linear-gradient(to left, rgba(black, if($variant == 'light',
 }
 
 $list_shadow: if($variant == 'light',
-                (inset 0 0 8px rgba(black, 0.01), inset 0 0 3px rgba(black, 0.01), inset 0 0 0 1px rgba(black, 0.04), inset 0 1px rgba(black, 0.05)),
-                (inset 0 0 8px rgba(white, 0.01), inset 0 0 3px rgba(white, 0.02), inset 0 0 0 1px rgba(white, 0.04), inset 0 1px rgba(white, 0.06)));
+                (inset 0 0 8px rgba(black, 0.02), inset 0 0 3px rgba(black, 0.01), inset 0 0 0 1px rgba(black, 0.04), inset 0 1px rgba(black, 0.05)),
+                (inset 0 0 8px rgba(white, 0.03), inset 0 0 3px rgba(white, 0.02), inset 0 0 0 1px rgba(white, 0.04), inset 0 1px rgba(white, 0.06)));
 
 %circular_list {
-  border-radius: $bd_radius;
+  border-radius: $wm_radius;
   box-shadow: $list_shadow;
   background-color: if($variant == 'light', rgba(black, 0.03), rgba(white, 0.05));
   border: none;
@@ -86,41 +77,24 @@ $list_shadow: if($variant == 'light',
 
 %circular_row {
   &:first-child {
-    border-top-left-radius: $bd_radius;
-    border-top-right-radius: $bd_radius;
+    border-top-left-radius: $wm_radius;
+    border-top-right-radius: $wm_radius;
   }
 
   &:last-child { // Not use ?
-    border-bottom-left-radius: $bd_radius;
-    border-bottom-right-radius: $bd_radius;
+    border-bottom-left-radius: $wm_radius;
+    border-bottom-right-radius: $wm_radius;
   }
 
   &:only-child {
-    border-radius: $bd_radius;
-  }
-
-  & + row {
-    border-top: 1px solid transparent;
-    border-image: linear-gradient(to right,
-                                  transparent 0%,
-                                  transparent 2%,
-                                  $menu_bd 2%,
-                                  $menu_bd 98%,
-                                  transparent 98%,
-                                  transparent 100%) 1 0 0 0 / 1px 0 0 0 stretch;
-  }
-
-  &:hover, &:active, &:selected {
-    &, & + row {
-      border-image: none;
-    }
+    border-radius: $wm_radius;
   }
 }
 
 %sidebar_row {
   margin: 2px 4px;
-  border-radius: $bd_radius;
-  -gtk-outline-radius : $bd_radius - 2px;
+  border-radius: $wm_radius - 4px;
+  -gtk-outline-radius : $wm_radius - 6px;
 }
 
 // catch all extend
@@ -688,8 +662,8 @@ $_dot_color: $selected_bg_color;
 %flat_button {
   @include button(flat-normal);
   &:hover { @include button(flat-hover); }
-  &:active { @include button(flat-active); }
-  &:checked { @include button(flat-checked); }
+  &:active, &:active:hover { @include button(flat-active); }
+  &:checked, &:checked:hover { @include button(flat-checked); }
   &:disabled { @include button(flat-insensitive); }
 }
 
@@ -739,7 +713,6 @@ button {
   }
 
   &:active, &:checked {
-    @include button(active);
     background-clip: if($variant=='light', border-box, padding-box);
     transition-duration: 200ms;
 
@@ -748,13 +721,33 @@ button {
 
   &:disabled {
     @include button(insensitive);
+  }
 
+  .background & {
     &:active, &:checked {
-      @include button(insensitive-active);
+      @include button(active);
+    }
+
+    &:disabled {
+      &:active, &:checked {
+        @include button(insensitive-active);
+      }
     }
   }
 
-  &.image-button, &.popup {
+  .background &.flat { // reset
+    &:active, &:checked {
+      @include button(flat-active);
+    }
+
+    &:disabled {
+      &:active, &:checked {
+        @include button(flat-insensitive-active);
+      }
+    }
+  }
+
+  &.image-button:not(.circular), &.popup:not(.circular) {
     min-height: $menuitem_size - 4px;
     min-width: $menuitem_size - 4px;
     padding-left: $container_padding - 2px;
@@ -792,11 +785,8 @@ button {
     &.popup { padding-right: $container_padding; padding-left: $container_padding; }
   }
 
-  &.close,
-  &.circular,
-  &.circular.image-button,
-  &.circular.flat,
-  &.image-button.close { // The Bloody Circul Button
+  &.close, &.circular, &.circular.flat,
+  &.image-button.close:not(.circular) { // The Bloody Circul Button
     @extend %circular_button;
 
     &:active, &:checked {
@@ -2498,19 +2488,16 @@ notebook {
     }
 
     button.flat.toggle.popup {
+      min-width: $medium_size;
       border: none;
       box-shadow: none;
+      border-radius: $bt_radius;
+      padding: 0 $container_padding / 2;
 
       @if $monterey == 'true' {
-        min-width: $medium_size;
         margin-top: -2px;
         margin-bottom: -2px;
         margin-left: $container_padding / 2;
-        border-radius: $bt_radius;
-        padding: 0 $container_padding / 2;
-      } @else {
-        border-radius: 0;
-        padding: 0;
       }
 
       &:active, &:checked {
@@ -2612,26 +2599,36 @@ notebook {
       button.flat,
       button.close-button,
       button.image-button.flat {
-        border: none;
-        box-shadow: none;
         border-radius: 3px;
         padding: 0;
-        color: $alt_fg_color;
-        min-height: 16px;
-        min-width: 16px;
-        margin-top: 4px;
-        margin-bottom: 4px;
+        color: mix($bg_color, $fg_color, 35%);
         margin-left: $container_padding / 2;
-        margin-right: -$container_padding / 2;
+        margin-right: -$container_padding;
+
+        @if $monterey == 'false' {
+          min-height: $small_size;
+          min-width: $small_size;
+          margin-top: 2px;
+          margin-bottom: 2px;
+        } @else {
+          min-height: 16px;
+          min-width: 16px;
+          margin-top: 4px;
+          margin-bottom: 4px;
+          margin-left: $container_padding / 2;
+          margin-right: -$container_padding / 2;
+        }
 
         &:hover {
+          @extend %undecorated_button;
           color: $fg_color;
-          background-color: rgba($fg_color, 0.1);
+          background-color: rgba($borders_color, 0.1);
         }
 
         &:active {
+          @extend %undecorated_button;
           color: if($variant == 'light', darken($fg_color, 10%), lighten($fg_color, 10%));
-          background-color: rgba($fg_color, 0.2);
+          background-color: rgba($borders_color, 0.2);
         }
       }
     }
@@ -2677,9 +2674,9 @@ scrollbar {
 
   // slider
   slider {
-    min-width: $container_padding + 2px;
-    min-height: $container_padding + 2px;
-    margin: 0;
+    min-width: $container_padding - 2px;
+    min-height: $container_padding - 2px;
+    margin: -1px;
     border: 4px solid transparent;
     border-radius: $container_padding * 2;
     background-clip: padding-box;
@@ -2707,24 +2704,26 @@ scrollbar {
       background-color: transparent;
 
       slider {
-        margin: $container_padding / 2;
+        margin: 0;
         min-width: $container_padding - 2px;
         min-height: $container_padding - 2px;
         background-color: mix($fg_color, $bg_color, 70%);
-        border: none;
+        border: 1px solid $borders_color;
       }
 
       &.horizontal slider {
+        margin: 0 $container_padding / 2;
         min-width: $_slider_min_length;
       }
 
       &.vertical slider {
+        margin: $container_padding / 2 0;
         min-height: $_slider_min_length;
       }
     }
 
     &.dragging,
-    &.hovering { opacity: 1; }
+    &.hovering { opacity: 0.99; }
   }
 
   &.horizontal slider { min-width: $_slider_min_length; }
@@ -2762,8 +2761,8 @@ switch {
   background-color: transparent;
   background-clip: padding-box;
   color: transparent;
-  min-width: 32px;
-  min-height: 20px;
+  min-width: 40px;
+  min-height: 24px;
   font-size: 0;
   box-shadow: inset 0 1px 2px rgba(black, 0.1);
   background-image: $switch_image, radial-gradient(circle farthest-corner at center, transparent 0%, transparent 0%);
@@ -2797,8 +2796,8 @@ switch {
 
   slider {
     transition: $longer_transition, $shadow_transition, margin 0;
-    min-width: 18px;
-    min-height: 18px;
+    min-width: 22px;
+    min-height: 22px;
     margin: 1px 0 1px 1px;
     border-radius: $circular_radius;
     -gtk-outline-radius: $circular_radius;
