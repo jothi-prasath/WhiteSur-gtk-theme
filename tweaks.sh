@@ -13,40 +13,69 @@
 ###############################################################################
 
 readonly REPO_DIR="$(dirname "$(readlink -m "${0}")")"
-source "${REPO_DIR}/shell/lib-install.sh"
+source "${REPO_DIR}/libs/lib-install.sh"
 
 # Customization, default values
 colors=("${COLOR_VARIANTS[@]}")
 opacities=("${OPACITY_VARIANTS[@]}")
 
+# Firefox values
+adaptive=''
+theme_name="$THEME_NAME"
+firefoxtheme="$THEME_NAME"
+left_button="3"
+right_button="3"
+
 usage() {
   # Please specify their default value manually, some of them are come from _variables.scss
   # You also have to check and update them regurally
   helpify_title
-  helpify "[GDM theme]"         "options"                                           ".................." ""
-  helpify "-g, --gdm"           "[default|x2]"                                      "Install '${THEME_NAME}' theme for GDM (scaling: 100%/200%, default is 100%)" "Requires to run this shell as root"
-  helpify "-o, --opacity"       "[$(IFS='|'; echo "${OPACITY_VARIANTS[*]}")]"       "Set '${THEME_NAME}' GDM theme opacity variants"                              "Default is 'normal'"
-  helpify "-c, --color"         "[$(IFS='|'; echo "${COLOR_VARIANTS[*]}")]"         "Set '${THEME_NAME}' GDM and Dash to Dock theme color variants"               "Default is 'light'"
-  helpify "-t, --theme"         "[$(IFS='|'; echo "${THEME_VARIANTS[*]}")]"         "Set '${THEME_NAME}' GDM theme accent color"                                  "Default is BigSur-like theme"
-  helpify "-N, --no-darken"     ""                                                  "Don't darken '${THEME_NAME}' GDM theme background image"                     ""
-  helpify "-n, --no-blur"       ""                                                  "Don't blur '${THEME_NAME}' GDM theme background image"                       ""
-  helpify "-b, --background"    "[default|blank|IMAGE_PATH]"                        "Set '${THEME_NAME}' GDM theme background image"                              "Default is BigSur-like wallpaper"
-  helpify "-p, --panel-opacity" "[$(IFS='|'; echo "${PANEL_OPACITY_VARIANTS[*]}")]" "Set '${THEME_NAME}' GDM (GNOME Shell) theme panel transparency"              "Default is 15%"
-  helpify "-P, --panel-size"    "[$(IFS='|'; echo "${PANEL_SIZE_VARIANTS[*]}")]"    "Set '${THEME_NAME}' Gnome shell panel height size"                           "Default is 32px"
-  helpify "-i, --icon"          "[$(IFS='|'; echo "${ICON_VARIANTS[*]}")]"          "Set '${THEME_NAME}' GDM (GNOME Shell) 'Activities' icon"                     "Default is 'standard'"
-  helpify "--nord, --nordcolor" ""                                                  "Install '${THEME_NAME}' Nord ColorScheme themes"                             ""
+  helpify "-o, --opacity"                  "[$(IFS='|'; echo "${OPACITY_VARIANTS[*]}")]"       "  Set '${THEME_NAME}' GDM/Flatpak theme opacity variants"           "Default is 'normal'"
+  helpify "-c, --color"                    "[$(IFS='|'; echo "${COMMAND_COLOR_VARIANTS[*]}")]" "  Set '${THEME_NAME}' GDM/Flatpak theme color variants"             "Default is 'light'"
+  helpify "-t, --theme"                    "[$(IFS='|'; echo "${THEME_VARIANTS[*]}")]"         "  Set '${THEME_NAME}' GDM/Flatpak theme accent color"               "Default is BigSur-like theme"
+  helpify "-s, --scheme"                   "[$(IFS='|'; echo "${SCHEME_VARIANTS[*]}")]"        "  Set '${THEME_NAME}' GDM/Flatpak theme colorscheme style"          "Default is 'standard'"
 
-  helpify "[Others]"            "options"                                           ".................." ""
-  helpify "-f, --firefox"       "[default|monterey|alt]"                            "Install '${THEME_NAME}|Monterey|Alt' theme for Firefox and connect it to the current Firefox profiles" "Default is ${THEME_NAME}"
-  helpify "-e, --edit-firefox"  ""                                                  "Edit '${THEME_NAME}' theme for Firefox settings and also connect the theme to the current Firefox profiles" ""
+  helpify "" "" "Tweaks for GDM theme" "options"
+  sec_title "-g, --gdm"                    ""                                                  "  Without options default GDM theme will install..."                ""
+  sec_helpify "1. -i, -icon"               "[$(IFS='|'; echo "${ICON_VARIANTS[*]}")]"          "  Set GDM panel 'Activities' icon"                                  "Default is 'standard'"
+  sec_helpify "2. -b, -background"         "[default|blank|IMAGE_PATH]"                        "  Set GDM background image"                                         "Default is BigSur-like wallpaper"
+  sec_helpify "3. -p, -panelopacity"       "[$(IFS='|'; echo "${PANEL_OPACITY_VARIANTS[*]}")]" "  Set GDM panel transparency"                                       "Default is 15%"
+  sec_helpify "4. -h, -panelheight"        "[$(IFS='|'; echo "${PANEL_SIZE_VARIANTS[*]}")]"    "  Set GDM panel height size"                                        "Default is 32px"
+  sec_helpify "5. -sf, -smallerfont"       ""                                                  "  Set GDM font size to smaller (10pt)"                              "Default is 11pt"
+  sec_helpify "6. -nd, -nodarken"          ""                                                  "  Don't darken '${THEME_NAME}' GDM theme background image"          ""
+  sec_helpify "7. -nb, -noblur"            ""                                                  "  Don't blur '${THEME_NAME}' GDM theme background image"            ""
 
-  helpify "-F, --flatpak"       ""                                                  "Connect '${THEME_NAME}' theme to Flatpak"                                    ""
-  #helpify "-s, --snap"          ""                                                  "Connect '${THEME_NAME}' theme the currently installed snap apps"             ""
-  helpify "-d, --dash-to-dock"  ""                                                  "Fixed Dash to Dock theme issue"                                              ""
+  helpify "" "" "Tweaks for firefox" "options"
+  sec_title "-f, --firefox" "        [(monterey|flat)|alt|(darker|adaptive)]"       "  Without options default WhiteSur theme will install..."                      "  Options:"
+  sec_helpify "1. monterey" "      [3+3|3+4|3+5|4+3|4+4|4+5|5+3|5+4|5+5]"           "  Topbar buttons number: 'a+b'"                                                "  a: left side buttons number, b: right side buttons number"
+  sec_helpify "2. flat" "          Monterey alt version"                            ""                                                                              "  Flat round tabs..."
+  sec_helpify "3. alt" "           Alt windows button version"                      ""                                                                              "  Alt windows button style like gtk theme"
+  sec_helpify "4. darker" "        Darker Firefox theme version"                    ""                                                                              "  Darker Firefox theme version"
+  sec_helpify "5. adaptive" "      Adaptive color version"                          "  You need install adaptive-tab-bar-colour plugin first"                       "  https://addons.mozilla.org/firefox/addon/adaptive-tab-bar-colour/"
 
-  helpify "-r, --remove, --revert" ""                                               "Revert to the original themes, do the opposite things of install and connect" ""
-  helpify "--silent-mode"       ""                                                  "Meant for developers: ignore any confirm prompt and params become more strict" ""
-  helpify "-h, --help"          ""                                                  "Show this help"                                                              ""
+  helpify "-e, --edit-firefox"  "[(monterey|flat)|alt|(darker|adaptive)]"           "  Edit '${THEME_NAME}' theme for Firefox settings and also connect the theme to the current Firefox profiles" ""
+
+  helpify "" "" "Others" "options"
+  sec_title "-F, --flatpak"     "Support options: [-o, -c, -t...]"                             "  Connect '${THEME_NAME}' theme to Flatpak"                         "Without options will only install default themes"
+  sec_helpify "1.  -o, --opacity"          "[$(IFS='|'; echo "${OPACITY_VARIANTS[*]}")]"       "  Set '${THEME_NAME}' flatpak theme opacity variants"               "Default is 'normal'"
+  sec_helpify "2.  -c, --color"            "[$(IFS='|'; echo "${COLOR_VARIANTS[*]}")]"         "  Set '${THEME_NAME}' flatpak theme color variants"                 "Default is 'light'"
+  sec_helpify "3.  -t, --theme"            "[$(IFS='|'; echo "${THEME_VARIANTS[*]}")]"         "  Set '${THEME_NAME}' flatpak theme accent color"                   "Default is BigSur-like theme"
+  sec_helpify "4.  -s, --scheme"           "[$(IFS='|'; echo "${SCHEME_VARIANTS[*]}")]"        "  Set '${THEME_NAME}' flatpak theme colorscheme style"              "Default is 'standard'"
+
+  #helpify "-s, --snap"          ""                                                  "  Connect '${THEME_NAME}' theme the currently installed snap apps"             ""
+
+  helpify "-d, --dash-to-dock"  ""                                                  "  Fixed Dash to Dock theme issue"                                              ""
+
+  helpify "-r, --remove, --revert" ""                                               "  Revert to the original themes, do the opposite things of install and connect" ""
+  helpify "--silent-mode"       ""                                                  "  Meant for developers: ignore any confirm prompt and params become more strict" ""
+  helpify "-h, --help"          ""                                                  "  Show this help"                                                              ""
+}
+
+gdm_info() {
+  if [[ "${gdm}" == "false" ]]; then
+    prompt -e "Oops... there's nothing to tweak. this option '${1}' only works for GDM theme! ..."
+    prompt -i "HINT: Run ./tweaks.sh -h for help!... \n"
+  fi
 }
 
 ###############################################################################
@@ -86,19 +115,70 @@ while [[ $# -gt 0 ]]; do
       for variant in "${@}"; do
         case "${variant}" in
           default)
-            shift 1
-            ;;
+            firefoxtheme="WhiteSur"
+            shift ;;
           monterey)
-            monterey="true"
-            name="Monterey"
-            shift 1
-            ;;
+            firefoxtheme="Monterey"
+            theme_name="Monterey"
+            shift
+            for button in "${@}"; do
+              case "${button}" in
+                3+3)
+                  left_button="3"
+                  right_button="3"
+                  shift ;;
+                3+4)
+                  left_button="3"
+                  right_button="4"
+                  shift ;;
+                3+5)
+                  left_button="3"
+                  right_button="5"
+                  shift ;;
+                4+3)
+                  left_button="4"
+                  right_button="3"
+                  shift ;;
+                4+4)
+                  left_button="4"
+                  right_button="4"
+                  shift ;;
+                4+5)
+                  left_button="4"
+                  right_button="5"
+                  shift ;;
+                5+3)
+                  left_button="5"
+                  right_button="3"
+                  shift ;;
+                5+4)
+                  left_button="5"
+                  right_button="4"
+                  shift ;;
+                5+5)
+                  left_button="5"
+                  right_button="5"
+                  shift ;;
+              esac
+            done
+            prompt -s "Left side topbar button number: $left_button, right side topbar button number: $right_button.\n" ;;
+          flat)
+            firefoxtheme="Flat"
+            theme_name="Monterey"
+            shift ;;
           alt)
-            monterey="true"
-            alttheme="true"
-            name="Monterey"
-            shift 1
-            ;;
+            window="alt"
+            prompt -i "Alt windows button version...\n"
+            shift ;;
+          darker)
+            darker="-darker"
+            prompt -i "Darker Firefox theme version...\n"
+            shift ;;
+          adaptive)
+            adaptive="-adaptive"
+            prompt -i "Firefox adaptive color version...\n"
+            prompt -w "You need install adaptive-tab-bar-colour plugin first: https://addons.mozilla.org/firefox/addon/adaptive-tab-bar-colour/\n"
+            shift ;;
         esac
       done
 
@@ -113,6 +193,37 @@ while [[ $# -gt 0 ]]; do
         prompt -e "'${1}' ERROR: Firefox is running, please close it"
         has_any_error="true"
       fi; shift ;;
+    -g|--gdm)
+      gdm="true"; full_sudo "${1}"
+      showapps_normal="true" # use normal showapps icon
+      background="default"
+      shift
+      for variant in "${@}"; do
+        case "${variant}" in
+          -i|-icon)
+            activities_icon="true";
+            check_param "${1}" "${1}" "${2}" "must" "must" "must" && shift 2 || shift ;;
+          -b|-background)
+            check_param "${1}" "${1}" "${2}" "must" "must" "must" "false" && shift 2 || shift ;;
+          -p|-panelopacity)
+            check_param "${1}" "${1}" "${2}" "optional" "optional" "optional" && shift 2 || shift ;;
+          -h|-panelheight)
+            check_param "${1}" "${1}" "${2}" "optional" "optional" "optional" && shift 2 || shift ;;
+          -nd|-nodarken)
+            gdm_info ${1}
+            no_darken="true"; shift ;;
+          -nb|-noblur)
+            gdm_info ${1}
+            no_blur="true"; shift ;;
+          -sf|-smallerfont)
+            smaller_font="true"; shift ;;
+        esac
+      done
+
+      if ! has_command gdm && ! has_command gdm3 && [[ ! -e /usr/sbin/gdm3 ]]; then
+        prompt -e "'${1}' ERROR: There's no GDM installed in your system"
+        has_any_error="true"
+      fi ;;
     -F|--flatpak)
       flatpak="true"; signal_exit
 
@@ -127,27 +238,7 @@ while [[ $# -gt 0 ]]; do
 #        prompt -e "'${1}' ERROR: There's no Snap installed in your system"
 #        has_any_error="true"
 #      fi; shift ;;
-    -g|--gdm)
-      gdm="true"; full_sudo "${1}"
-      showapps_normal="true" # use normal showapps icon
-      background="default"
 
-      for variant in "${@}"; do
-        case "${variant}" in
-          default)
-            shift 1
-            ;;
-          x2)
-            scale="x2"
-            shift 1
-            ;;
-        esac
-      done
-
-      if ! has_command gdm && ! has_command gdm3 && [[ ! -e /usr/sbin/gdm3 ]]; then
-        prompt -e "'${1}' ERROR: There's no GDM installed in your system"
-        has_any_error="true"
-      fi; shift ;;
     -d|--dash-to-dock)
       if [[ ! -d "${DASH_TO_DOCK_DIR_HOME}" && ! -d "${DASH_TO_DOCK_DIR_ROOT}" ]]; then
         prompt -e "'${1}' ERROR: There's no Dash to Dock installed in your system"
@@ -155,29 +246,14 @@ while [[ $# -gt 0 ]]; do
       else
         dash_to_dock="true"
       fi; shift ;;
-    -N|--no-darken)
-      no_darken="true"; shift ;;
-    -n|--no-blur)
-      no_blur="true"; shift ;;
-    -l|--libadwaita)
-      libadwaita="true"; shift ;;
-    --nord|--nordcolor)
-      colorscheme="-nord"; shift ;;
-      # Parameters that require value, single use
-    -b|--background)
-      check_param "${1}" "${1}" "${2}" "must" "must" "must" "false" && shift 2 || shift ;;
-    -i|--icon)
-      check_param "${1}" "${1}" "${2}" "must" "must" "must" "false" && shift 2 || shift ;;
-    -p|--panel-opacity)
-      check_param "${1}" "${1}" "${2}" "optional" "optional" "optional" && shift 2 || shift ;;
-    -P|--panel-size)
-      check_param "${1}" "${1}" "${2}" "optional" "optional" "optional" && shift 2 || shift ;;
     -o|--opacity)
-      check_param "${1}" "${1}" "${2}" "must" "must" "must" "false" && shift 2 || shift ;;
+      check_param "${1}" "${1}" "${2}" "not-at-all" "must" "must" && shift 2 || shift ;;
     -c|--color)
-      check_param "${1}" "${1}" "${2}" "must" "must" "must" "false" && shift 2 || shift ;;
+      check_param "${1}" "${1}" "${2}" "not-at-all" "must" "must" && shift 2 || shift ;;
     -t|--theme)
-      check_param "${1}" "${1}" "${2}" "must" "must" "must" "false" && shift 2 || shift ;;
+      check_param "${1}" "${1}" "${2}" "not-at-all" "must" "must" && shift 2 || shift ;;
+    -s|--scheme)
+      check_param "${1}" "${1}" "${2}" "not-at-all" "must" "must" && shift 2 || shift ;;
     *)
       prompt -e "ERROR: Unrecognized tweak option '${1}'."
       has_any_error="true"; shift ;;
@@ -220,9 +296,9 @@ if [[ "${uninstall}" == 'true' ]]; then
   fi
 
   if [[ "${firefox}" == 'true' && "${gdm}" != 'true' ]]; then
-    prompt -i "Removing '${name}' Firefox theme... \n"
+    prompt -i "Removing '${firefoxtheme}' Firefox theme... \n"
     remove_firefox_theme
-    prompt -s "Done! '${name}' Firefox theme has been removed. \n"
+    prompt -s "Done! '${firefoxtheme}' Firefox theme has been removed. \n"
   fi
 else
   show_needed_dialogs; customize_theme
@@ -245,7 +321,8 @@ else
 
   if [[ "${flatpak}" == 'true' && "${gdm}" != 'true' ]]; then
     prompt -i "Connecting '${name}' themes to your Flatpak... \n"
-    connect_flatpak
+    prompt -w "Without options it will only install default themes\n"
+    customize_theme; avoid_variant_duplicates; connect_flatpak
     prompt -s "Done! '${name}' theme has been connected to your Flatpak. \n"
   fi
 
@@ -257,20 +334,27 @@ else
   fi
 
   if [[ "${firefox}" == 'true' || "${edit_firefox}" == 'true' ]]; then
+
+    if [[ "${darker}" == '-darker' && "${adaptive}" == '-adaptive' ]]; then
+      prompt -w "FIREFOX: You can't use 'adaptive' and 'darker' at the same time. \n"
+      prompt -i "FIREFOX: Setting to adaptive only... \n"
+      darker=''
+    fi
+
     if [[ "${firefox}" == 'true' && "${gdm}" != 'true' ]]; then
-      prompt -i "Installing '${name}' Firefox theme... \n"
+      prompt -i "Installing '${firefoxtheme}' Firefox theme... \n"
       install_firefox_theme
-      prompt -s "Done! '${name}' Firefox theme has been installed. \n"
+      prompt -s "Done! '${firefoxtheme}' Firefox theme has been installed. \n"
     fi
 
     if [[ "${edit_firefox}" == 'true' && "${gdm}" != 'true' ]]; then
-      prompt -i "Editing '${name}' Firefox theme preferences... \n"
+      prompt -i "Editing '${firefoxtheme}' Firefox theme preferences... \n"
       edit_firefox_theme_prefs
-      prompt -s "Done! '${name}' Firefox theme preferences has been edited. \n"
+      prompt -s "Done! '${firefoxtheme}' Firefox theme preferences has been edited. \n"
     fi
 
-    if [[ "${gdm}" != 'true' ]]; then
-      prompt -w "FIREFOX: Please go to [Firefox menu] > [Customize...], and customize your Firefox to make it work. Move your 'new tab' button to the titlebar instead of tab-switcher."
+    if [[ "${gdm}" == "false" ]]; then
+      prompt -w "FIREFOX: Please go to [Firefox menu] > [Customize...], and customize your Firefox to make it work. Move your 'new tab' button to the titlebar instead of tab-switcher. \n"
       prompt -i "FIREFOX: Anyway, you can also edit 'userChrome.css' and 'customChrome.css' later in your Firefox profile directory. \n"
     fi
   fi

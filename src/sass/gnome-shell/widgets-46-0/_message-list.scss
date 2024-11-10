@@ -66,7 +66,11 @@
     border-style: solid;
 
     &:focus {
-      border-color: transparentize($selected_bg_color, 0.4);
+      @if $gnome_version == 'old' {
+        border-color: transparentize($selected_bg_color, 0.4);
+      } @else {
+        border-color: st-transparentize($selected_bg_color, 0.4);
+      }
     }
   }
 }
@@ -103,9 +107,12 @@ $card_bg: if($variant == 'light', rgba(white, 0.95), rgba(lighten($base_color, 8
 
 // message bubbles
 .message {
-  @extend %card;
   border: 1px solid transparent;
   border-left: none;
+
+  .popup-menu & {
+    @extend %card;
+  }
 
   // subtract side padding to accommodate the close button's border
   &:ltr { padding-right:-2px; }

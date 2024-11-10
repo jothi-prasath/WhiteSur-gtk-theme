@@ -2,32 +2,19 @@
 
 @namespace xul "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 
-#urlbar {
-	--urlbar-height: 32px !important;
-	--urlbar-container-height: 32px !important;
-	--urlbar-toolbar-height: 32px !important;
-	--urlbar-inner-padding: 0 !important;
-}
-
 toolbarspring {
 	display: none !important;
 }
 
 /* URL bar */
 #urlbar {
+	--urlbar-height: 32px !important;
+	--urlbar-container-height: 32px !important;
+	--urlbar-toolbar-height: 32px !important;
+	--urlbar-inner-padding: 0 !important;
 	box-shadow: none !important;
-}
-
-#urlbar-background {
-	box-shadow: none !important;
-	border: 0 !important;
-	background: transparent !important;
-	border-radius: 8px !important;
-	padding: 0 !important;
-}
-
-#urlbar:-moz-window-inactive {
-	border-color: var(--gnome-inactive-headerbar-background) !important;
+	width: 360px !important;
+	min-width: 360px !important;
 }
 
 #urlbar[focused="true"]:not([suppress-focus-border]) > #urlbar-background {
@@ -36,7 +23,8 @@ toolbarspring {
 
 #urlbar-container,
 #wrapper-urlbar-container,
-#urlbar #urlbar-input-container {
+#urlbar #urlbar-input-container,
+#urlbar .urlbar-input-container {
 	padding: 0 !important;
 	width: 360px !important;
 	min-width: 360px !important;
@@ -49,6 +37,13 @@ toolbarspring {
 	min-width: 360px !important;
 }
 
+#urlbar-background {
+	box-shadow: none !important;
+	border: none !important;
+	background: none !important;
+	border-radius: 8px !important;
+}
+
 #urlbar[breakout][breakout-extend] {
 	left: 0 !important;
 	top: 0 !important;
@@ -56,15 +51,26 @@ toolbarspring {
 	z-index: 5 !important;
 	padding: 0 !important;
 	border-radius: 8px !important;
+	outline: 2px solid var(--gnome-focused-urlbar-border-color) !important;
+	outline-offset: -2px;
+	-moz-outline-radius: 8px;
+	transition: outline 100ms ease-out;
 }
+
 #urlbar[breakout][breakout-extend][open] {
 	height: auto !important;
 	max-height: unset !important;
 }
-#urlbar[breakout][breakout-extend] #urlbar-input-container {
+
+#urlbar[breakout][breakout-extend] #urlbar-input-container,
+#urlbar[breakout][breakout-extend] .urlbar-input-container {
 	height: 32px !important;
 	max-height: 32px !important;
 	padding: 0 !important;
+}
+
+#urlbar:-moz-window-inactive {
+	border-color: var(--gnome-inactive-headerbar-background) !important;
 }
 
 #urlbar-input {
@@ -145,7 +151,19 @@ toolbarspring {
 	margin-left: 6px !important;
 }
 
+#identity-box[pageproxystate="invalid"] > .identity-box-button,
+#urlbar:not(.searchButton) > #urlbar-input-container > #identity-box[pageproxystate="invalid"] > .identity-box-button {
+	padding-inline: 6px !important;
+}
+
 /* URL bar and Search bar */
+#urlbar[focused],
+#searchbar:focus-within {
+	outline: none !important;
+	border: none !important;
+	box-shadow: none !important;
+}
+
 #urlbar[focused] .urlbar-textbox-container {
 	margin: -1px !important;
 }
@@ -168,17 +186,15 @@ toolbarspring {
 	fill-opacity: 1 !important;
 }
 
-#identity-box {
-	margin: 3px 2px !important;
-	border-radius: 5px !important;
-}
-
 #notification-popup-box {
 	height: 26px !important;
 	border-radius: 5px !important;
 }
 
-.urlbar-page-action, #urlbar-go-button, .search-go-button,
+.urlbar-page-action,
+#urlbar-go-button,
+.urlbar-go-button,
+.search-go-button,
 #tracking-protection-icon-container {
 	width: 28px !important;
 	height: 26px !important;
@@ -187,10 +203,30 @@ toolbarspring {
 	border-radius: 5px !important;
 }
 
+#identity-box {
+	margin: 3px 2px !important;
+	border-radius: 5px !important;
+}
+
+#identity-box[pageproxystate="valid"].chromeUI {
+	margin-left: 0 !important;
+}
+
+#tracking-protection-icon-container:hover,
+.urlbar-page-action:hover,
+#urlbar-go-button:hover,
+.urlbar-go-button:hover,
+.search-go-button:hover,
 #identity-box:hover {
 	background: var(--gnome-headerbar-button-hover-background) !important;
 }
 
+#tracking-protection-icon-container:active,
+#tracking-protection-icon-container[open="true"],
+.urlbar-page-action:active,
+#urlbar-go-button:active,
+.urlbar-go-button:active,
+.search-go-button:active,
 #identity-box:active {
 	background: var(--gnome-headerbar-button-active-background) !important;
 }

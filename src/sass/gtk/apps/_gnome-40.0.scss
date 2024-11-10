@@ -26,6 +26,34 @@ $flap_sidebar_size: 240px;
                                                          $header_border 40%);
 }
 
+%nautilus_view {
+  border-radius: $bt_radius;
+  transition: background-color $longer_duration $deceleration_curve;
+
+  &:hover {
+    background-color: $fill_color;
+    transition-duration: $shorter_duration;
+  }
+
+  &:active {
+    color: $fg_color;
+    background-color: $divider_color;
+  }
+
+  &:disabled {
+    color: $disabled_fg_color;
+  }
+
+  &:selected {
+    color: $fg_color;
+    background-color: $visit_color;
+
+    &:hover { background-color: $track_color; }
+
+    &:active { background-color: $active_color; }
+  }
+}
+
 .nautilus-window {
   @if $nautilus_style == 'stable' or $nautilus_style == 'glassy' {
     &.background.csd {
@@ -58,19 +86,6 @@ $flap_sidebar_size: 240px;
 
   headerbar > windowhandle > box { padding: 0 10px; }
 
-  placessidebar {
-    .navigation-sidebar > row {
-      &:selected {
-        background-color: if($variant == 'light', rgba(black, 0.15), rgba(white, 0.15));
-        color: $fg_color;
-      }
-
-      &.sidebar-row {
-        .sidebar-icon { color: if($variant == 'light', $selected_bg_color, lighten($selected_bg_color, 20%)); }
-      }
-    }
-  }
-
   flap.unfolded,
   .sidebar-pane {
     &, &:backdrop {
@@ -79,6 +94,25 @@ $flap_sidebar_size: 240px;
 
     placessidebar {
       background: none;
+
+      .navigation-sidebar:not(.view) {
+        > row {
+          &:selected {
+            background-color: if($variant == 'light', rgba(black, 0.15), rgba(white, 0.15));
+            color: $fg_color;
+          }
+
+          &.sidebar-row {
+            .sidebar-icon {
+              @if $gnome_version == 'old' {
+                color: if($variant == 'light', $selected_bg_color, lighten($selected_bg_color, 20%));
+              } @else {
+                color: if($variant == 'light', $selected_bg_color, color-mix(in srgb, white 20%, $selected_bg_color));
+              }
+            }
+          }
+        }
+      }
     }
 
     > separator.horizontal {
@@ -115,8 +149,7 @@ $flap_sidebar_size: 240px;
     background-color: $base_color;
 
     child.activatable {
-      border-radius: $bt_radius;
-      @extend %row_activatable;
+      @extend %nautilus_view;
     }
   }
 
@@ -134,8 +167,19 @@ $flap_sidebar_size: 240px;
       > row.activatable {
         padding: 0;
         margin: 0;
-        border-radius: $bt_radius;
-        @extend %row_activatable;
+        @extend %nautilus_view;
+
+        > cell {
+          padding: 0;
+
+          > widget#NautilusViewCell {
+            padding: $container_padding $container_padding * 1.5;
+          }
+        }
+
+        + row {
+          margin-top: $container_padding / 2;
+        }
       }
     }
   }
@@ -314,6 +358,66 @@ preferencesgroup > box {
     &:selected {
       outline-color: $selected_bg_color;
       background-color: transparent;
+    }
+  }
+
+  .cutout-button { background-color: $dialog_bg_color; }
+
+  @if $gnome_version == 'new' {
+    button.accent-button {
+      min-height: 24px;
+      min-width: 24px;
+      padding: $base_padding / 2;
+      border-radius: $circular_radius;
+      background: var(--accent-bg-color);
+      outline: none;
+      background-clip: content-box;
+      box-shadow: none;
+      border: none;
+
+      &:hover { box-shadow: 0 0 0 3px $divider_color; }
+
+      &:checked { box-shadow: 0 0 0 3px var(--accent-bg-color); }
+
+      &.blue, &.teal, &.green, &.yellow, &.orange, &.red, &.pink, &.purple, &.slate {
+        --accent-color: oklab(from var(--accent-bg-color) var(--standalone-color-oklab));
+      }
+
+      &.blue {
+        --accent-bg-color: var(--accent-blue);
+      }
+
+      &.teal {
+        --accent-bg-color: var(--accent-teal);
+      }
+
+      &.green {
+        --accent-bg-color: var(--accent-green);
+      }
+
+      &.yellow {
+        --accent-bg-color: var(--accent-yellow);
+      }
+
+      &.orange {
+        --accent-bg-color: var(--accent-orange);
+      }
+
+      &.red {
+        --accent-bg-color: var(--accent-red);
+      }
+
+      &.pink {
+        --accent-bg-color: var(--accent-pink);
+      }
+
+      &.purple {
+        --accent-bg-color: var(--accent-purple);
+      }
+
+      &.slate {
+        --accent-bg-color: var(--accent-slate);
+      }
     }
   }
 }
@@ -1156,10 +1260,66 @@ spinner.fade-in:checked {
 }
 
 //
+// Gnome Tweaks
+//
+
+window.background.csd {
+  > dialog-host > widget > widget > box > leaflet {
+    > headerbar.titlebar.tweak-titlebar-left {
+      @extend %side_headerbar_left;
+    }
+
+    > headerbar.titlebar.tweak-titlebar-right {
+      @extend %side_headerbar_right;
+    }
+
+    > separator {
+      @extend %side_separator;
+    }
+
+    > box > searchbar {
+      @extend %side_searchbar;
+    }
+
+    list.navigation-sidebar {
+      @extend %side_style_left;
+    }
+
+    stack.background {
+      background-color: $base_color;
+    }
+  }
+}
+
+//
+// Ptyxis
+//
+
+.ptyxis-window {
+  vte-terminal {
+    background: none;
+  }
+}
+
+//
 // Misc (other)
 //
 
 #desktopwindow.background {
   background-color: transparent;
   background-image: none;
+}
+
+//
+// Pamac manager
+//
+
+dialog-host > widget > widget > toolbarview {
+  > box > entry.search {
+    margin: $base_padding * 2 0;
+
+    + toastoverlay > stack {
+      border-top: 1px solid $header_border;
+    }
+  }
 }

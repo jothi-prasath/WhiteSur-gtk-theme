@@ -10,16 +10,21 @@ Based on https://github.com/rafaelmardojai/firefox-gnome-theme
 
 ## Installation
 
-Run `./tweaks.sh -f`
+Run: `./tweaks.sh -f`
 
 if you want to use `Monterey` style then:
 
-Run `./tweaks.sh -f monterey`
+Run: `./tweaks.sh -f monterey`
 
 ### Tips about monterey options (Fix the urlbar attached tabs issue)
 
 1. Remove all space separators on left of urlbar
-2. Make sure how many buttons you put on side of urlbar an then run `./tweaks.sh -f monterey -e`
+2. Make sure how many buttons on side of urlbar, a: left side buttons number(3-5), b: right side buttons number(3-5).
+3. then run: `./tweaks.sh -f monterey a+b` for example: `./tweaks.sh -f monterey 5+5`
+
+or you can edit the config file
+
+1. run: `./tweaks.sh -f monterey -e`
 
 ```
 /*--------------Configure your Monterey theme--------------
@@ -39,7 +44,15 @@ Run `./tweaks.sh -f monterey`
 
 ```
 
-3. Choose the right buttons number config then remove `/*` to enable it and add `/*` to disable the default one
+2. Choose the right buttons number config then remove `/*` to enable it and add `/*` to disable the default one
+
+### Adaptive version support now!
+
+https://github.com/user-attachments/assets/9b99297f-e6b3-4aa0-812a-331cddb517ce
+
+Run: `./tweaks.sh -f adaptive` to install it
+
+You need install adaptive-tab-bar-colour plugin first. https://addons.mozilla.org/firefox/addon/adaptive-tab-bar-colour/
 
 ### Manual installation
 

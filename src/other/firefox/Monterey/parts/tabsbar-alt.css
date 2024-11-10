@@ -6,21 +6,29 @@
 	--space-above-tabbar: 0 !important;
 }
 
-/* Fix tabs bar icon sizes */
-#TabsToolbar tab {
-	margin-bottom: 6px !important;
+/* Tabs bar height */
+
+#TabsToolbar {
+	min-height: 32px !important;
 }
 
-/* Tabs bar height */
+#TabsToolbar-customization-target {
+	padding-bottom: 6px !important;
+}
+
 #tabbrowser-tabs,
 #tabbrowser-tabs arrowscrollbox {
-	min-height: 36px !important;
-	--tab-min-height: 36px !important;
+	min-height: 32px !important;
+	--tab-min-height: 32px !important;
+}
+
+#tabbrowser-tabs:not([secondarytext-unsupported]) .tab-label-container {
+	max-height: 32px !important;
 }
 
 .tab-background, .tab-stack {
-	height: 36px !important;
-	min-height: 36px !important;
+	height: 32px !important;
+	min-height: 32px !important;
 }
 
 tab > stack {
@@ -54,8 +62,13 @@ tab > stack {
 
 .tab-background {
 	margin: 0 !important;
-	transition: all 200ms;
+	transition: none;
 	margin-block: 0 !important;
+}
+
+.tab-background:hover,
+.tab-background:is([selected]) {
+	transition: background 200ms;
 }
 
 #TabsToolbar .tabbrowser-tab:not([selected=true]) .tab-background {
@@ -106,7 +119,7 @@ tab[selected]:-moz-window-inactive .tab-label {
 	justify-content: center !important;
 	align-items: center !important;
 	min-width: 100% !important;
-	padding: 0 10px !important;
+	padding: 0 8px !important;
 }
 
 .tab-label {
@@ -209,8 +222,8 @@ tab[selected]:-moz-window-inactive .tab-label {
 
 .close-icon {
 	height: 16px !important;
-	padding: 0 !important;
 	width: 16px !important;
+	padding: 0 !important;
 }
 
 .tab-close-button {
@@ -234,11 +247,6 @@ tab[selected]:-moz-window-inactive .tab-label {
 	visibility: visible;
 }
 
-@media (prefers-color-scheme: dark) {
-	.tab-close-button {
-		list-style-image: url("../icons/window-close-symbolic-light.svg") !important;
-	}
-}
 :root:-moz-window-inactive .tab-close-button:not(#hack) {
 	opacity: .18 !important;
 }
@@ -302,30 +310,34 @@ tab[selected]:-moz-window-inactive .tab-label {
 }
 
 #TabsToolbar #alltabs-button {
-	padding: 0 0 !important;
+	padding: 0 !important;
 	visibility: collapse !important;
 }
 
 #TabsToolbar .toolbarbutton-1,
 #tabs-newtab-button, #TabsToolbar #new-tab-button {
+	min-height: 32px !important;
 	margin: 0 2px !important;
 	padding: 0 10px !important;
 	border-radius: 8px !important;
 }
 
 #TabsToolbar .toolbarbutton-1 image,
-#tabs-newtab-button image, #TabsToolbar #new-tab-button image {
+#tabs-newtab-button image,
+#TabsToolbar #new-tab-button image {
 	margin: 0 !important;
 	padding: 0 !important;
 	height: 16px !important;
 	width: 16px !important;
 }
 
-#TabsToolbar #scrollbutton-up, #TabsToolbar #scrollbutton-down {
-	height: 36px !important;
+#TabsToolbar #scrollbutton-up,
+#TabsToolbar #scrollbutton-down {
+	height: 32px !important;
 }
 
-#TabsToolbar #scrollbutton-up image, #TabsToolbar #scrollbutton-down image {
+#TabsToolbar #scrollbutton-up image,
+#TabsToolbar #scrollbutton-down image {
 	margin: 0 !important;
 	padding: 0 !important;
 	height: 16px !important;
@@ -333,10 +345,14 @@ tab[selected]:-moz-window-inactive .tab-label {
 }
 
 /* firefox-view-button */
-:root:not([privatebrowsingmode="temporary"]):not([firefoxviewhidden]) :is(#firefox-view-button, #wrapper-firefox-view-button) + #tabbrowser-tabs {
-	border-inline-start: none !important;
-	padding-inline-start: 0 !important;
-	margin-inline-start: 0 !important;
+:root:not([privatebrowsingmode], [firefoxviewhidden]) :is(toolbarbutton, toolbarpaletteitem) + #tabbrowser-tabs,
+:root[privatebrowsingmode]:not([firefoxviewhidden]) :is(
+  toolbarbutton:not(#firefox-view-button),
+  toolbarpaletteitem:not(#wrapper-firefox-view-button)
+) + #tabbrowser-tabs {
+  border-inline-start: none !important;
+  padding-inline-start: calc(var(--tab-overflow-pinned-tabs-width)) !important;
+  margin-inline-start: 0 !important;
 }
 
 #firefox-view-button {
@@ -353,6 +369,5 @@ tab[selected]:-moz-window-inactive .tab-label {
 }
 
 #firefox-view-button > .toolbarbutton-icon {
-	filter: none !important;
 	box-shadow: none !important;
 }

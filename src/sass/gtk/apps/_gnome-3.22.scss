@@ -88,7 +88,7 @@ $nautilus_sidebar_image: image($dark_sidebar_bg);
 
         > .linked > button.disclosure-button { margin-left: $container_padding / 2; }
 
-        @if $placement == 'left' {
+        @if $nautilus_style != 'right' {
           > box > stack > box {
             margin-left: 18px;
           }
@@ -122,7 +122,7 @@ $nautilus_sidebar_image: image($dark_sidebar_bg);
       }
 
       @if $nautilus_style == 'normal' or $nautilus_style == 'stable' {
-        @if $placement == 'left' {
+        @if $nautilus_style != 'right' {
           > .linked.raised > button:first-child { margin-left: $nautilus_sidebar_size - (48px + $container_padding * 6); }
         }
       }
@@ -1959,7 +1959,7 @@ window.background.csd {
   }
 }
 
-.background tabbox {
+tabbox {
   @if $monterey == 'false' {
     background-color: darken($header_bg, 10%);
     box-shadow: inset 0 -1px $borders_color;
@@ -2873,6 +2873,13 @@ window#GearyMainWindow.background.csd { // <= 3.32
         border-radius: $bt_radius;
         padding: $container_padding;
 
+        &:hover, &:active, &:selected {
+          &, & + row {
+            box-shadow: 0 0 0 $container_padding / 2 + 1px $base_color;
+            transition: box-shadow 0;
+          }
+        }
+
         > widget > box > box {
           padding: $container_padding / 2;
         }
@@ -2886,7 +2893,8 @@ window#GearyMainWindow.background.csd { // <= 3.32
       > separator {
         background-color: $menu_bd;
         border: none;
-        margin: $container_padding / 2 $container_padding * 2;
+        margin: $container_padding / 2 $container_padding * 3;
+        transition: none;
       }
     }
   }
